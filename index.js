@@ -8,7 +8,10 @@ app.use(cors());
 app.use(express.json());
 
 import { workerRouter } from './routes/workerRoutes.js'
+import { userRoutes } from './routes/userRoutes.js';
+
 app.use("/api/workers", workerRouter);
+app.use("/api/user", userRoutes);
 app.get("/", (req, res) => {
     res.send({ message: "Im alive!" });
 })
