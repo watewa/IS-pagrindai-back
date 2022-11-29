@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import mysql from 'mysql2/promise';
-import  bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import validator from 'validator';
 
 const createToken = (id) => {
@@ -12,21 +12,26 @@ export const loginUser = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        if(!username || !password){
-            throw Error("Fill in all fields");
+        if (!username || !password) {
+            throw Error("Užpildykite visus laukus");
         }
         const connection = await mysql.createConnection(process.env.DATABASE_URL);
         const query = `SELECT * FROM Vartotojas WHERE Prisijungimo_vardas = '${username}'`;
         const [rows] = await connection.query(query);
         connection.end();
-        if(rows.length == 0){
-            throw Error("No such user");
+        if (rows.length == 0) {
+            throw Error("Tokio vartotojo nėra");
+        }
+
+        const match = await bcrypt.compare(password, rows[0].Slaptazodis);
+        if (!match) {
+            throw Error("Neteisingas slaptažodis");
         }
 
         const token = createToken(rows[0].id_Vartotojas);
 
-        
-        res.status(200).json({ username, token, tipas: rows[0].tipas });
+
+        res.status(200).json({ username, token, tipas: rows[0].tipas, _id: rows[0].id_Vartotojas });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -36,22 +41,22 @@ export const loginUser = async (req, res) => {
 export const signupUser = async (req, res) => {
     const { username, password } = req.body;
     try {
-        if(!username || !password){
-            throw Error("Fill in all fields");
+        if (!username || !password) {
+            throw Error("Užpildykite visus laukus");
         }
         if (!validator.matches(username, "^[a-zA-Z0-9_\.\-]*$")) {
-            console.log('Username not valid');
+            console.log('Slapyvardis netinkamas');
         }
-        if(!validator.isStrongPassword(password, { minLowercase: 0, minUppercase: 0, minNumbers: 0, minSymbols: 0 })){
-            throw Error("Password is weak");
+        if (!validator.isStrongPassword(password, { minLowercase: 0, minUppercase: 0, minNumbers: 0, minSymbols: 0 })) {
+            throw Error("Slaptazodis per trumpas");
         }
         // sql injection still is possible :( whatever
 
         const connection = await mysql.createConnection(process.env.DATABASE_URL);
         const query = `SELECT * FROM Vartotojas WHERE Prisijungimo_vardas = '${username}'`;
         const [rows] = await connection.query(query);
-        if(rows.length != 0){
-            throw Error("User exists");
+        if (rows.length != 0) {
+            throw Error("Vartotojas egzistuoja");
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -62,9 +67,10 @@ export const signupUser = async (req, res) => {
         connection.end();
 
         res.status(200).json({
-            username, 
+            username,
             tipas: 0,
-            token
+            token,
+            _id: rs[0].insertId
         });
     } catch (err) {
         res.status(400).json({ error: err.message });
