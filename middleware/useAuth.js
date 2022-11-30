@@ -13,7 +13,6 @@ export const requireAuth = async (req, res, next) => {
 
     try {
         const { _id } = jwt.verify(token, process.env.SECRET);
-
         const connection = await mysql.createConnection(process.env.DATABASE_URL);
         const query = `SELECT * FROM Vartotojas WHERE id_Vartotojas = '${_id}'`;
         const [rows] = await connection.query(query);
@@ -23,6 +22,14 @@ export const requireAuth = async (req, res, next) => {
         next();
     } catch (err) {
         console.log(err);
-        res.status(401).json({ error: "Unauthorized" });
+        res.status(401).json({ error: "Neturite teisių" });
     }
+}
+
+const allowedTypes = [2, 42];
+export const requireWorker = (req, res, next) => {
+    if (!allowedTypes.includes(req.user.tipas)) {
+        return res.status(401).json({ error: "Neturite teisių šiai operacijai" });
+    }
+    next();
 }
