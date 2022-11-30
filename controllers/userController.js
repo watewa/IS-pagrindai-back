@@ -18,20 +18,35 @@ export const loginUser = async (req, res) => {
         const connection = await mysql.createConnection(process.env.DATABASE_URL);
         const query = `SELECT * FROM Vartotojas WHERE Prisijungimo_vardas = '${username}'`;
         const [rows] = await connection.query(query);
-        connection.end();
         if (rows.length == 0) {
+            connection.end();
             throw Error("Tokio vartotojo nėra");
         }
 
         const match = await bcrypt.compare(password, rows[0].Slaptazodis);
         if (!match) {
+            connection.end();
             throw Error("Neteisingas slaptažodis");
         }
 
         const token = createToken(rows[0].id_Vartotojas);
+        let wid = null; // worker id
+        if(rows[0].tipas == 2){
+            const [rws] = await connection.query(`SELECT * FROM Darbuotojas WHERE fk_Vartotojas=${rows[0].id_Vartotojas}`)
+            if(rws.length == 0){
+                throw Error("Nera tokio darbuotojo");
+            }
+            wid = rws[0].id_Darbuotojas;
+        }
+        connection.end();
 
-
-        res.status(200).json({ username, token, tipas: rows[0].tipas, _id: rows[0].id_Vartotojas });
+        res.status(200).json({
+            wid,
+            username, 
+            token, 
+            tipas: rows[0].tipas, 
+            _id: rows[0].id_Vartotojas 
+        });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -67,6 +82,7 @@ export const signupUser = async (req, res) => {
         connection.end();
 
         res.status(200).json({
+            wid: null,
             username,
             tipas: 0,
             token,

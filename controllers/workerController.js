@@ -46,6 +46,9 @@ export const getWorkerById = async (req, res) => {
         const query = `SELECT * FROM Darbuotojas WHERE id_Darbuotojas = '${id}'`;
         const [rows] = await connection.query(query);
         connection.end();
+        if(rows.length == 0){
+            throw Error(`Darbuotojas su id=${id} nerastas`);
+        }
         res.status(200).json({
             worker: rows[0]
         });
