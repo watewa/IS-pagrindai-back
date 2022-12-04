@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllWorkers, createWorker, getUsers, getWorkerById, updateWorker, deleteWorker} from '../controllers/workerController.js';
+import { getAllWorkers, createWorker, getUsers, getWorkerById, updateWorker, deleteWorker, getSchedule} from '../controllers/workerController.js';
 import { requireAuth, requireWorker } from '../middleware/useAuth.js';
 
 export const workerRouter = express.Router();
@@ -18,5 +18,7 @@ workerRouter.get("/users", getUsers);
 workerRouter.get("/worker/:id", getWorkerById);
 
 workerRouter.post("/update", updateWorker);
+
+workerRouter.get("/schedule", getSchedule);
 
 workerRouter.delete("/:id", deleteWorker);
