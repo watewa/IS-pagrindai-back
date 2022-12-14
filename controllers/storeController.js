@@ -100,7 +100,6 @@ export const CreateStore = async (req, res) => {
             '${Math.floor(Math.random() * 10000)}'
         )`;
         await connection.query(query);
-        await connection.query(query2);
         connection.end();
 
         res.status(200).json({ success: true });
