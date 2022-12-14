@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise';
+import axios from 'axios';
 
 export const DeleteStore = async (req, res) => {
     try {
@@ -65,9 +66,9 @@ export const EditStore = async (req, res) => {
         if (!adresas) {
             throw Error("Adresas negali būti tusčia");
         }
-        
+
         const connection = await mysql.createConnection(process.env.DATABASE_URL);
-        
+
         const query = `UPDATE Parduotuve SET 
         vadovas = '${vadovas}',
         adresas = '${adresas}'
@@ -89,43 +90,42 @@ export const CreateStore = async (req, res) => {
         if (!adresas) {
             throw Error("Adresas negali būti tusčia");
         }
-        
+
         const connection = await mysql.createConnection(process.env.DATABASE_URL);
-        
+
         const query = `INSERT INTO Parduotuve (vadovas, adresas, fk_Pristatymasid_Pristatymas, fk_Darbuotojasid_Darbuotojas) VALUES (
             '${vadovas}',
             '${adresas}',
-            '${Math.floor(Math.random()*10000)}',
-            '${Math.floor(Math.random()*10000)}'
+            '${Math.floor(Math.random() * 10000)}',
+            '${Math.floor(Math.random() * 10000)}'
         )`;
         await connection.query(query);
         await connection.query(query2);
         connection.end();
-        
+
         res.status(200).json({ success: true });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 }
 
-export const SendEmail = async (req, res) =>{
-    const { vadovas, adresas } = req.body;
-        if (!vadovas) {
-            throw Error("Vadovas negali būti tusčias");
-        }
-        if (!adresas) {
-            throw Error("Adresas negali būti tusčia");
-        }
-    const rs = await fetch(`https://api42.teisingas.repl.co/mailpass`, {
-        method: "POST",
+export const SendEmail = async (req, res) => {
+    // const { vadovas, adresas } = req.body;
+    // if (!vadovas) {
+    //     throw Error("Vadovas negali būti tusčias");
+    // }
+    // if (!adresas) {
+    //     throw Error("Adresas negali būti tusčia");
+    // }
+    const rs = await axios.post(`https://api42.teisingas.repl.co/mailpass`, JSON.stringify({
+        to: "armmat@ktu.lt",
+        subject: "Detruction",
+        text: "It is time to pay up",
+        html: "<h2>Pay up or face consequences</h2>"
+    }), {
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            to: "v.spakauskas@gmail.com",
-            subject: "Detruction",
-            text: "It is time to pay up",
-            html: "<h2>Pay up or face consequences</h2>"
-        })
+        }
     });
+    res.status(200).send("sent");
 }
