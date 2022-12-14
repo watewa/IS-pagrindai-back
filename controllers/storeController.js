@@ -99,9 +99,33 @@ export const CreateStore = async (req, res) => {
             '${Math.floor(Math.random()*10000)}'
         )`;
         await connection.query(query);
+        await connection.query(query2);
         connection.end();
+        
         res.status(200).json({ success: true });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
+}
+
+export const SendEmail = async (req, res) =>{
+    const { vadovas, adresas } = req.body;
+        if (!vadovas) {
+            throw Error("Vadovas negali būti tusčias");
+        }
+        if (!adresas) {
+            throw Error("Adresas negali būti tusčia");
+        }
+    const rs = await fetch(`https://api42.teisingas.repl.co/mailpass`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            to: "v.spakauskas@gmail.com",
+            subject: "Detruction",
+            text: "It is time to pay up",
+            html: "<h2>Pay up or face consequences</h2>"
+        })
+    });
 }
