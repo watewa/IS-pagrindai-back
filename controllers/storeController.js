@@ -58,7 +58,7 @@ export const GetStoreById = async (req, res) => {
 
 export const EditStore = async (req, res) => {
     try {
-        const { vadovas, adresas } = req.body;
+        const { uid, vadovas, adresas } = req.body;
         if (!vadovas) {
             throw Error("Vadovas negali būti tusčias");
         }
@@ -68,12 +68,10 @@ export const EditStore = async (req, res) => {
         
         const connection = await mysql.createConnection(process.env.DATABASE_URL);
         
-        const query = `INSERT INTO Parduotuve (vadovas, adresas, fk_Pristatymasid_Pristatymas, fk_Darbuotojasid_Darbuotojas) VALUES (
-            '${vadovas}',
-            '${adresas}',
-            '${Math.floor(Math.random()*10000)}',
-            '${Math.floor(Math.random()*10000)}'
-        )`;
+        const query = `UPDATE Parduotuve SET 
+        vadovas = '${vadovas}',
+        adresas = '${adresas}'
+        WHERE id_Parduotuve = '${uid}'`;
         await connection.query(query);
         connection.end();
         res.status(200).json({ success: true });

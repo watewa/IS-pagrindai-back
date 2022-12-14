@@ -13,7 +13,7 @@ storeRouter.get("/", GetAllStores);
 
 storeRouter.post("/new", CreateStore);
 
-storeRouter.get("/store/:id", GetStoreById);
+storeRouter.get("/:uid", GetStoreById);
 
 storeRouter.post("/edit", EditStore);
 
