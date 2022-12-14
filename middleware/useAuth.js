@@ -33,3 +33,9 @@ export const requireWorker = (req, res, next) => {
     }
     next();
 }
+export const requireStore = (req, res, next) => {
+    if (!allowedTypes.includes(req.user.tipas)) {
+        return res.status(401).json({ error: "Neturite teisių šiai operacijai" });
+    }
+    next();
+}

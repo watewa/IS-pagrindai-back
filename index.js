@@ -9,9 +9,15 @@ app.use(express.json());
 
 import { workerRouter } from './routes/workerRoutes.js'
 import { userRoutes } from './routes/userRoutes.js';
+
 import { orderRouter } from './routes/orderRoutes.js';
 
 app.use("/api/orders", orderRouter);
+
+import { storeRouter } from './routes/storeRoutes.js';
+
+app.use("/api/store", storeRouter);
+
 app.use("/api/workers", workerRouter);
 app.use("/api/user", userRoutes);
 app.get("/", (req, res) => {
