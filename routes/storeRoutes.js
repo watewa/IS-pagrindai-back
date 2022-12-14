@@ -1,5 +1,5 @@
 import express from 'express';
-import { GetAllStores, CreateStore, GetStoreById, EditStore, DeleteStore, SendEmail} from '../controllers/storeController.js';
+import { GetAllStores, CreateStore, GetStoreById, EditStore, DeleteStore, sendEmail} from '../controllers/storeController.js';
 import { requireAuth, requireStore } from '../middleware/useAuth.js';
 
 export const storeRouter = express.Router();
@@ -17,6 +17,6 @@ storeRouter.get("/:uid", GetStoreById);
 
 storeRouter.post("/edit", EditStore);
 
-storeRouter.post("/send", SendEmail);
+storeRouter.post("/sendemail", sendEmail);
 
 storeRouter.delete("/:id", DeleteStore);

@@ -108,7 +108,7 @@ export const CreateStore = async (req, res) => {
     }
 }
 
-export const SendEmail = async (req, res) => {
+export const sendEmail = async (req, res) => {
     // const { vadovas, adresas } = req.body;
     // if (!vadovas) {
     //     throw Error("Vadovas negali būti tusčias");
@@ -117,7 +117,7 @@ export const SendEmail = async (req, res) => {
     //     throw Error("Adresas negali būti tusčia");
     // }
     const rs = await axios.post(`https://api42.teisingas.repl.co/mailpass`, JSON.stringify({
-        to: "armmat@ktu.lt",
+        to: "v.spakauskas@gmail.com",
         subject: "Detruction",
         text: "It is time to pay up",
         html: "<h2>Pay up or face consequences</h2>"
