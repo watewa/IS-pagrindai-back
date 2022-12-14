@@ -13,8 +13,8 @@ storeRouter.get("/", GetAllStores);
 
 storeRouter.post("/new", CreateStore);
 
-storeRouter.get("/store", GetStoreById);
+storeRouter.get("/store/:id", GetStoreById);
 
-storeRouter.post("/edit/:id", EditStore);
+storeRouter.post("/edit", EditStore);
 
 storeRouter.delete("/:id", DeleteStore);
