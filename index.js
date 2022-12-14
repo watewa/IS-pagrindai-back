@@ -9,7 +9,9 @@ app.use(express.json());
 
 import { workerRouter } from './routes/workerRoutes.js'
 import { userRoutes } from './routes/userRoutes.js';
+import { orderRouter } from './routes/orderRoutes.js';
 
+app.use("/api/orders", orderRouter);
 app.use("/api/workers", workerRouter);
 app.use("/api/user", userRoutes);
 app.get("/", (req, res) => {
