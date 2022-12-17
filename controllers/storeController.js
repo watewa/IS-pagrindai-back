@@ -126,5 +126,5 @@ export const sendEmail = async (req, res) => {
             'Content-Type': 'application/json'
         }
     });
-    res.status(200).send("sent");
+    res.status(200).json({msg: "sent"});
 }
