@@ -119,7 +119,7 @@ export const sendEmail = async (req, res) => {
     const rs = await axios.post(`https://api42.teisingas.repl.co/mailpass`, JSON.stringify({
         to: adresas,
         subject: "Gautas užsakymas " +ordernum,
-        text: "Mielas kliente " + vadovas + ", prašome atsiimti jūsų užsakymą."
+        text: "Mielas kliente, " + vadovas + ", prašome atsiimti jūsų užsakymą."
     }), {
         headers: {
             'Content-Type': 'application/json'
